@@ -4,6 +4,10 @@
 struct MyModule : Module {
 	enum ParamIds {
 		PITCH_PARAM,
+                SLOW1_PARAM,
+                SLOW2_PARAM,
+                SLOW3_PARAM,
+                SLOW4_PARAM,
 		NUM_PARAMS
 	};
 	enum InputIds {
@@ -11,7 +15,10 @@ struct MyModule : Module {
 		NUM_INPUTS
 	};
 	enum OutputIds {
-		SINE_OUTPUT,
+		CTRL1_OUTPUT,
+                CTRL2_OUTPUT,
+                CTRL3_OUTPUT,
+                CTRL4_OUTPUT,
 		NUM_OUTPUTS
 	};
 	enum LightIds {
@@ -49,8 +56,12 @@ void MyModule::step() {
 		phase -= 1.0f;
 
 	// Compute the sine output
-	float sine = sinf(2.0f * M_PI * phase);
-	outputs[SINE_OUTPUT].value = 5.0f * sine;
+	//float sine = sinf(2.0f * M_PI * phase);
+	//outputs[SINE_OUTPUT].value = 5.0f * sine;
+
+        // Outputs from the controllers
+
+
 
 	// Blink light at 1Hz
 	blinkPhase += deltaTime;
@@ -62,20 +73,53 @@ void MyModule::step() {
 
 struct MyModuleWidget : ModuleWidget {
 	MyModuleWidget(MyModule *module) : ModuleWidget(module) {
-		setPanel(SVG::load(assetPlugin(plugin, "res/MyModule.svg")));
+		setPanel(SVG::load(assetPlugin(plugin, "res/MyModule2.svg")));
 
 		addChild(Widget::create<ScrewSilver>(Vec(RACK_GRID_WIDTH, 0)));
 		addChild(Widget::create<ScrewSilver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, 0)));
 		addChild(Widget::create<ScrewSilver>(Vec(RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
 		addChild(Widget::create<ScrewSilver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
 
-		addParam(ParamWidget::create<Davies1900hBlackKnob>(Vec(28, 87), module, MyModule::PITCH_PARAM, -3.0, 3.0, 0.0));
 
-		addInput(Port::create<PJ301MPort>(Vec(33, 186), Port::INPUT, module, MyModule::PITCH_INPUT));
 
-		addOutput(Port::create<PJ301MPort>(Vec(33, 275), Port::OUTPUT, module, MyModule::SINE_OUTPUT));
+		//addInput(Port::create<PJ301MPort>(Vec(33, 186), Port::INPUT, module, MyModule::PITCH_INPUT));
+		//addChild(ModuleLightWidget::create<MediumLight<RedLight>>(Vec(41, 59), module, MyModule::BLINK_LIGHT));
+                //addParam(ParamWidget::create<Davies1900hBlackKnob>(Vec(28, 87), module, MyModule::PITCH_PARAM, -3.0, 3.0, 0.0));
 
-		addChild(ModuleLightWidget::create<MediumLight<RedLight>>(Vec(41, 59), module, MyModule::BLINK_LIGHT));
+
+                SlowSliderWidget *ssw;
+
+                ssw= ParamWidget::create<SlowSliderWidget>(Vec(20,20), module, MyModule::SLOW1_PARAM, -3.0, 3.0, 0);
+                ssw->setup(0,0,-3.0,3.0);
+                ssw->setDestination(30,10);
+		addParam(ssw);
+
+		addOutput(Port::create<PJ301MPort>(Vec(40, 170), Port::OUTPUT, module, MyModule::CTRL1_OUTPUT));
+
+
+                ssw= ParamWidget::create<SlowSliderWidget>(Vec(20,200), module, MyModule::SLOW2_PARAM, -3.0, 3.0, 0);
+                ssw->setup(0,0,-3.0,3.0);
+                ssw->setDestination(30,40);
+		addParam(ssw);
+
+		addOutput(Port::create<PJ301MPort>(Vec(40, 345), Port::OUTPUT, module, MyModule::CTRL2_OUTPUT));
+
+
+                ssw= ParamWidget::create<SlowSliderWidget>(Vec(110,20), module, MyModule::SLOW3_PARAM, -3.0, 3.0, 0);
+                ssw->setup(0,0,-3.0,3.0);
+                ssw->setDestination(30,5);
+		addParam(ssw);
+
+		addOutput(Port::create<PJ301MPort>(Vec(130, 170), Port::OUTPUT, module, MyModule::CTRL3_OUTPUT));
+
+
+                ssw= ParamWidget::create<SlowSliderWidget>(Vec(110,200), module, MyModule::SLOW4_PARAM, -3.0, 3.0, 0);
+                ssw->setup(0,0,-3.0,3.0);
+                ssw->setDestination(120,10);
+		addParam(ssw);
+
+		addOutput(Port::create<PJ301MPort>(Vec(130, 345), Port::OUTPUT, module, MyModule::CTRL4_OUTPUT));
+
 	}
 };
 
