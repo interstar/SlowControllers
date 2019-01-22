@@ -41,33 +41,36 @@ struct MyModule : Module {
 
 void MyModule::step() {
 	// Implement a simple sine oscillator
-	float deltaTime = engineGetSampleTime();
+	//float deltaTime = engineGetSampleTime();
 
 	// Compute the frequency from the pitch parameter and input
-	float pitch = params[PITCH_PARAM].value;
-	pitch += inputs[PITCH_INPUT].value;
-	pitch = clamp(pitch, -4.0f, 4.0f);
+	//float pitch = params[PITCH_PARAM].value;
+	//pitch += inputs[PITCH_INPUT].value;
+	//pitch = clamp(pitch, -4.0f, 4.0f);
 	// The default pitch is C4
-	float freq = 261.626f * powf(2.0f, pitch);
+	//float freq = 261.626f * powf(2.0f, pitch);
 
 	// Accumulate the phase
-	phase += freq * deltaTime;
-	if (phase >= 1.0f)
-		phase -= 1.0f;
+	//phase += freq * deltaTime;
+	//if (phase >= 1.0f)
+	//	phase -= 1.0f;
 
 	// Compute the sine output
 	//float sine = sinf(2.0f * M_PI * phase);
 	//outputs[SINE_OUTPUT].value = 5.0f * sine;
 
         // Outputs from the controllers
-
+  outputs[CTRL1_OUTPUT].value = params[SLOW1_PARAM].value;
+  outputs[CTRL2_OUTPUT].value = params[SLOW2_PARAM].value;
+  outputs[CTRL3_OUTPUT].value = params[SLOW3_PARAM].value;
+  outputs[CTRL4_OUTPUT].value = params[SLOW4_PARAM].value;
 
 
 	// Blink light at 1Hz
-	blinkPhase += deltaTime;
-	if (blinkPhase >= 1.0f)
-		blinkPhase -= 1.0f;
-	lights[BLINK_LIGHT].value = (blinkPhase < 0.5f) ? 1.0f : 0.0f;
+	//blinkPhase += deltaTime;
+	//if (blinkPhase >= 1.0f)
+	//	blinkPhase -= 1.0f;
+	//lights[BLINK_LIGHT].value = (blinkPhase < 0.5f) ? 1.0f : 0.0f;
 }
 
 
@@ -90,7 +93,7 @@ struct MyModuleWidget : ModuleWidget {
                 SlowSliderWidget *ssw;
 
                 ssw= ParamWidget::create<SlowSliderWidget>(Vec(20,20), module, MyModule::SLOW1_PARAM, -3.0, 3.0, 0);
-                ssw->setup(0,0,-3.0,3.0);
+                ssw->setup(0,0,-5.0,5.0);
                 ssw->setDestination(30,10);
 		addParam(ssw);
 
@@ -98,7 +101,7 @@ struct MyModuleWidget : ModuleWidget {
 
 
                 ssw= ParamWidget::create<SlowSliderWidget>(Vec(20,200), module, MyModule::SLOW2_PARAM, -3.0, 3.0, 0);
-                ssw->setup(0,0,-3.0,3.0);
+                ssw->setup(0,0,-5.0,5.0);
                 ssw->setDestination(30,40);
 		addParam(ssw);
 
@@ -106,15 +109,15 @@ struct MyModuleWidget : ModuleWidget {
 
 
                 ssw= ParamWidget::create<SlowSliderWidget>(Vec(110,20), module, MyModule::SLOW3_PARAM, -3.0, 3.0, 0);
-                ssw->setup(0,0,-3.0,3.0);
-                ssw->setDestination(30,5);
+                ssw->setup(0,0,-5.0,5.0);
+                ssw->setDestination(138,1);
 		addParam(ssw);
 
 		addOutput(Port::create<PJ301MPort>(Vec(130, 170), Port::OUTPUT, module, MyModule::CTRL3_OUTPUT));
 
 
                 ssw= ParamWidget::create<SlowSliderWidget>(Vec(110,200), module, MyModule::SLOW4_PARAM, -3.0, 3.0, 0);
-                ssw->setup(0,0,-3.0,3.0);
+                ssw->setup(0,0,-5.0,5.0);
                 ssw->setDestination(120,10);
 		addParam(ssw);
 

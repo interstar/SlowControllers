@@ -7,8 +7,8 @@ namespace rack {
     update();
 
     nvgBeginPath(vg);
-    nvgFillColor(vg, nvgRGBA(0,0,0,255));
-    nvgRect(vg, x, y, w, h);
+    nvgFillColor(vg, nvgRGBA(0,0,66,255));
+    nvgRoundedRect(vg, x, y, w, h, 6);
     nvgFill(vg);
 
     nvgBeginPath(vg);
@@ -21,6 +21,7 @@ namespace rack {
     nvgFillColor(vg,nvgRGBA(255,0,200,255));
     nvgMoveTo(vg,x,y+destination);
     nvgLineTo(vg,x+w,y+destination);
+    nvgFill(vg);
   }
 
   void SlowSliderWidget::setup(float ex, float wy, float tmin, float tmax) {
@@ -65,6 +66,7 @@ namespace rack {
     } else {
       moving = false;
     }
+    setValue(getSliderValue());
   }
 
 
@@ -72,8 +74,17 @@ namespace rack {
     return ostart + (ostop - ostart) * ((value - istart) / (istop - istart));
   }
 
-  float SlowSliderWidget::getValue() {
+  float SlowSliderWidget::getSliderValue() {
     return map(current,h,0,targetMin,targetMax);
+  }
+
+  void SlowSliderWidget::onMouseDown(EventMouseDown &e)  {
+	if (e.button == 1) {
+		reset();
+	}
+	e.consumed = true;
+	e.target = this;
+        setDestination(e.pos.x, e.pos.y);
   }
 
 } // namespace rack
