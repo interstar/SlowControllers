@@ -1,4 +1,4 @@
-#include "Template.hpp"
+#include "SlowSliders.hpp"
 
 
 struct MyModule : Module {
@@ -49,7 +49,7 @@ void MyModule::step() {
 
 struct MyModuleWidget : ModuleWidget {
 	MyModuleWidget(MyModule *module) : ModuleWidget(module) {
-		setPanel(SVG::load(assetPlugin(plugin, "res/MyModule2.svg")));
+		setPanel(SVG::load(assetPlugin(plugin, "res/SlowSliders.svg")));
 
 		addChild(Widget::create<ScrewSilver>(Vec(RACK_GRID_WIDTH, 0)));
 		addChild(Widget::create<ScrewSilver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, 0)));
@@ -98,4 +98,4 @@ struct MyModuleWidget : ModuleWidget {
 // author name for categorization per plugin, module slug (should never
 // change), human-readable module name, and any number of tags
 // (found in `include/tags.hpp`) separated by commas.
-Model *modelMyModule = Model::create<MyModule, MyModuleWidget>("Template", "MyModule", "My Module", OSCILLATOR_TAG);
+Model *modelMyModule = Model::create<MyModule, MyModuleWidget>("SlowSliders", "MyModule", "My Module", CONTROLLER_TAG);

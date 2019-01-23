@@ -1,4 +1,4 @@
-#include "Template.hpp"
+#include "SlowSliders.hpp"
 
 
 namespace rack {
