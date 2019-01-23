@@ -27,14 +27,15 @@ namespace rack {
   void SlowSliderWidget::setup(float ex, float wy, float tmin, float tmax) {
     x = ex;
     y = wy;
-    w = 70;
-    h = 140;
+    w = 65;
+    h = 150;
     targetMin = tmin;
     targetMax = tmax;
     slideBottom = h;
     slideTop = 0;
     current = h/2;
     moving = false;
+    box.size = Vec(w,h);
   }
 
   bool SlowSliderWidget::hit(float ex, float wy) {
