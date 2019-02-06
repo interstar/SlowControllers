@@ -48,7 +48,7 @@ namespace rack {
   struct TriOsc {
     int c;
     float v,dv,max,min;
-    void setup(float m, float M);
+    void setup(float dv, float m, float M);
     void setDV(float d);
     float next();
   };
@@ -58,21 +58,19 @@ namespace rack {
     float wx[4096];
     float wy[4096];
 
+
     PhaseCounter writeHead;
     PhaseCounter readHead;
 
     float writeSpeed;
-
-
   };
 
-  struct WaveTableWidget : public OpaqueWidget {
+  struct WaveTable {
     Waves waves;
     TriOsc ox, oy;
+    float mix;
 
-    int x,y,w,h;
-    void setup(float ex, float wy);
-    void draw(NVGcontext *vg) override;
+    void setup();
     void update();
 
     // controllers
@@ -80,6 +78,21 @@ namespace rack {
     void setDY(float dy);
     void setMix(float mix);
     void setScan(float scan);
+
+    float x_(int i);
+    float y_(int i);
+    float z_(int i);
+
+    float nextScan();
+  };
+
+  struct WaveTableWidget : public OpaqueWidget {
+
+    int x,y,w,h;
+    WaveTable *waveTable;
+    void setup(float ex, float wy, WaveTable *wtp );
+    void draw(NVGcontext *vg) override;
+    void update();
   };
 
 }
