@@ -46,7 +46,7 @@ namespace rack {
 
 
   struct TriOsc {
-    int c;
+
     float v,dv,max,min;
     void setup(float dv, float m, float M);
     void setDV(float d);
@@ -69,6 +69,7 @@ namespace rack {
     Waves waves;
     TriOsc ox, oy;
     float mix;
+    bool frozen;
 
     void setup();
     void update();
@@ -78,6 +79,7 @@ namespace rack {
     void setDY(float dy);
     void setMix(float mix);
     void setScan(float scan);
+    void setFrozen(float fr);
 
     float x_(int i);
     float y_(int i);

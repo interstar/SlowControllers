@@ -35,12 +35,19 @@ namespace rack {
   void TriOsc::setDV(float d) {
     //if (d > (max - min)) { return; }
     dv = d;
+    v = 0;
   }
 
   float TriOsc::next() {
     v = v + dv;
-    if (v > max) { v = max; dv = std::min(-dv,dv); }
-    if (v < min) { v = min; dv = std::max(-dv,dv); }
+    if (v > max) {
+      v = max;
+      dv = std::min(-dv,dv);
+      return v;
+    }
+    if (v < min) {
+      v = min; dv = std::max(-dv,dv);
+    }
     return v;
   }
 
@@ -56,27 +63,34 @@ namespace rack {
 
     waves.writeHead.start(1,4096);
     waves.readHead.start(1,4096);
-    ox.setup(0.4,-5,5);
-    oy.setup(0.1,-5,5);
+    ox.setup(0.2,-5,5);
+    oy.setup(0.05,-5,5);
     mix = 0.5;
   }
 
   void WaveTable::setDX(float d) { ox.setDV(d); }
   void WaveTable::setDY(float d) { oy.setDV(d); }
   void WaveTable::setMix(float m) { mix = m; }
+
   void WaveTable::setScan(float s) {
     waves.readHead.setDX(s);
   }
 
+  void WaveTable::setFrozen(float fr) {
+    frozen = (fr < 0.5) ? false : true;
+  }
+
   void WaveTable::update() {
-    int i = waves.writeHead.next();
-    waves.wx[i] = ox.next();
-    waves.wy[i] = oy.next();
+    if (!frozen) {
+      int i = waves.writeHead.next();
+      waves.wx[i] = ox.next();
+      waves.wy[i] = oy.next();
+    }
   }
 
   float WaveTable::x_(int i) { return waves.wx[i]; }
   float WaveTable::y_(int i) { return waves.wy[i]; }
-  float WaveTable::z_(int i) { return 0.3*(waves.wx[i]*(1-mix) + waves.wy[i]*mix); }
+  float WaveTable::z_(int i) { return 0.6*(waves.wx[i]*(1-mix) + waves.wy[i]*mix); }
 
   float WaveTable::nextScan() {
     return z_(waves.readHead.next());
@@ -164,6 +178,7 @@ namespace rack {
       NUM_LIGHTS
     };
 
+    float oldDX, oldDY;
     WaveTable waveTable;
     SlowWaveTable() : Module(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS) {
       waveTable.setup();
@@ -179,7 +194,17 @@ namespace rack {
 
 void SlowWaveTable::step() {
   // fill in how we handle inputs and outputs here
-  waveTable.setDX(params[DX_PARAM].value);
+  float dx = params[DX_PARAM].value;
+  if (dx != oldDX) {
+    waveTable.setDX(log10(dx));
+    oldDX = dx;
+  }
+  float dy = params[DY_PARAM].value;
+  if (dy != oldDY) {
+    waveTable.setDY(log10(dy));
+    oldDY = dy;
+  }
+  waveTable.setFrozen(params[Freeze_PARAM].value);
   waveTable.setMix(params[Mix_PARAM].value);
   waveTable.setScan(params[Scan_PARAM].value);
   outputs[ONE_OUTPUT].value = waveTable.nextScan();
@@ -201,13 +226,15 @@ struct SlowWaveTableWidget : ModuleWidget {
     wtw->setup(0,0,module->exposeWT());
     addChild(wtw);
 
-    addParam(ParamWidget::create<Davies1900hBlackKnob>(Vec(20, 180), module, SlowWaveTable::DX_PARAM, 0.01, 10.0, 0.3));
-    addParam(ParamWidget::create<Davies1900hBlackKnob>(Vec(60, 180), module, SlowWaveTable::DY_PARAM, 0.01, 10.0, 0.3));
-    addParam(ParamWidget::create<Davies1900hBlackKnob>(Vec(100, 180), module, SlowWaveTable::Mix_PARAM, 0, 1, 0.5));
-    addParam(ParamWidget::create<Davies1900hBlackKnob>(Vec(140, 180), module, SlowWaveTable::Scan_PARAM, 0.1, 100, 10));
+    addParam(ParamWidget::create<CKSS>(Vec(234, 200), module, SlowWaveTable::Freeze_PARAM, 0.0f, 1.0f, 1.0f));
+
+    addParam(ParamWidget::create<RoundHugeBlackKnob>(Vec(30, 180), module, SlowWaveTable::DX_PARAM, 0.01, 1.0, 0.3));
+    addParam(ParamWidget::create<RoundHugeBlackKnob>(Vec(130, 180), module, SlowWaveTable::DY_PARAM, 0.01, 1.0, 0.3));
+    addParam(ParamWidget::create<RoundHugeBlackKnob>(Vec(30, 270), module, SlowWaveTable::Mix_PARAM, 0, 1, 0.5));
+    addParam(ParamWidget::create<RoundHugeBlackKnob>(Vec(130, 270), module, SlowWaveTable::Scan_PARAM, 0.01, 10, 1));
 
 
-    addOutput(Port::create<PJ301MPort>(Vec(234, 200), Port::OUTPUT, module, SlowWaveTable::ONE_OUTPUT));
+    addOutput(Port::create<PJ301MPort>(Vec(334, 200), Port::OUTPUT, module, SlowWaveTable::ONE_OUTPUT));
 
   }
 
