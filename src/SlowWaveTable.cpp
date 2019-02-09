@@ -202,20 +202,23 @@ namespace rack {
 
 
 void SlowWaveTable::step() {
+
   // fill in how we handle inputs and outputs here
-  float dx = params[DX_PARAM].value;
+  float dx = params[DX_PARAM].value + inputs[DX_INPUT].value;
   if (dx != oldDX) {
     waveTable.setDX(log10(dx));
     oldDX = dx;
   }
-  float dy = params[DY_PARAM].value;
+  float dy = params[DY_PARAM].value + inputs[DY_INPUT].value;
   if (dy != oldDY) {
     waveTable.setDY(log10(dy));
     oldDY = dy;
   }
+
   waveTable.setFrozen(params[Freeze_PARAM].value);
-  waveTable.setMix(params[Mix_PARAM].value);
-  waveTable.setScan(params[Scan_PARAM].value);
+
+  waveTable.setMix(params[Mix_PARAM].value + (inputs[Mix_INPUT].value / 10)  );
+  waveTable.setScan(params[Scan_PARAM].value + inputs[Scan_PARAM].value);
 
   waveTable.nextScan();
   outputs[X_OUTPUT].value = waveTable.x();
@@ -243,9 +246,14 @@ struct SlowWaveTableWidget : ModuleWidget {
 
     addParam(ParamWidget::create<RoundHugeBlackKnob>(Vec(30, 180), module, SlowWaveTable::DX_PARAM, 0.01, 1.0, 0.3));
     addParam(ParamWidget::create<RoundHugeBlackKnob>(Vec(130, 180), module, SlowWaveTable::DY_PARAM, 0.01, 1.0, 0.3));
-    addParam(ParamWidget::create<RoundHugeBlackKnob>(Vec(30, 270), module, SlowWaveTable::Mix_PARAM, 0, 1, 0.5));
-    addParam(ParamWidget::create<RoundHugeBlackKnob>(Vec(130, 270), module, SlowWaveTable::Scan_PARAM, 0.01, 10, 1));
+    addParam(ParamWidget::create<RoundHugeBlackKnob>(Vec(30, 290), module, SlowWaveTable::Mix_PARAM, 0, 1, 0.5));
+    addParam(ParamWidget::create<RoundHugeBlackKnob>(Vec(130, 290), module, SlowWaveTable::Scan_PARAM, 0.01, 10, 1));
 
+
+    addInput(Port::create<PJ301MPort>(Vec(45, 240), Port::INPUT, module, SlowWaveTable::DX_INPUT));
+    addInput(Port::create<PJ301MPort>(Vec(145, 240), Port::INPUT, module, SlowWaveTable::DY_INPUT));
+    addInput(Port::create<PJ301MPort>(Vec(45, 350), Port::INPUT, module, SlowWaveTable::Mix_INPUT));
+    addInput(Port::create<PJ301MPort>(Vec(145, 350), Port::INPUT, module, SlowWaveTable::Scan_INPUT));
 
     addOutput(Port::create<PJ301MPort>(Vec(334, 200), Port::OUTPUT, module, SlowWaveTable::X_OUTPUT));
     addOutput(Port::create<PJ301MPort>(Vec(334, 240), Port::OUTPUT, module, SlowWaveTable::Y_OUTPUT));
