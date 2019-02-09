@@ -57,12 +57,12 @@ namespace rack {
 
   void WaveTable::setup() {
     for (int i=0;i<4096;i++) {
-      waves.wx[i] = 0;
-      waves.wy[i] = 0;
+      wx[i] = 0;
+      wy[i] = 0;
     }
 
-    waves.writeHead.start(1,4096);
-    waves.readHead.start(1,4096);
+    writeHead.start(1,4096);
+    readHead.start(1,4096);
     ox.setup(0.2,-5,5);
     oy.setup(0.05,-5,5);
     mix = 0.5;
@@ -73,7 +73,7 @@ namespace rack {
   void WaveTable::setMix(float m) { mix = m; }
 
   void WaveTable::setScan(float s) {
-    waves.readHead.setDX(s);
+    readHead.setDX(s);
   }
 
   void WaveTable::setFrozen(float fr) {
@@ -82,9 +82,9 @@ namespace rack {
 
   void WaveTable::update() {
     if (!frozen) {
-      int i = waves.writeHead.next();
-      waves.wx[i] = ox.next();
-      waves.wy[i] = oy.next();
+      int i = writeHead.next();
+      wx[i] = ox.next();
+      wy[i] = oy.next();
     }
   }
 
@@ -92,14 +92,14 @@ namespace rack {
   float WaveTable::y() { return yy; }
   float WaveTable::z() { return zz; }
 
-  float WaveTable::x_(int i) { return waves.wx[i]; }
-  float WaveTable::y_(int i) { return waves.wy[i]; }
-  float WaveTable::z_(int i) { return 0.6 * (waves.wx[i]*(1-mix) + waves.wy[i]*mix); }
+  float WaveTable::x_(int i) { return wx[i]; }
+  float WaveTable::y_(int i) { return wy[i]; }
+  float WaveTable::z_(int i) { return 0.6 * (wx[i]*(1-mix) + wy[i]*mix); }
 
   void WaveTable::nextScan() {
-    int i = waves.readHead.next();
-    xx = waves.wx[i];
-    yy = waves.wy[i];
+    int i = readHead.next();
+    xx = wx[i];
+    yy = wy[i];
     zz = 0.6 * (xx * (1-mix) + yy * mix);
   }
 

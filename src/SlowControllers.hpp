@@ -53,8 +53,12 @@ namespace rack {
     float next();
   };
 
-  struct Waves {
-  public:
+
+  struct WaveTable {
+  private :
+    float xx,yy,zz;
+    float mix;
+
     float wx[4096];
     float wy[4096];
 
@@ -63,15 +67,10 @@ namespace rack {
     PhaseCounter readHead;
 
     float writeSpeed;
-  };
 
-  struct WaveTable {
-  private :
-    float xx,yy,zz;
-    float mix;
   public:
 
-    Waves waves;
+
     TriOsc ox, oy;
 
     bool frozen;
