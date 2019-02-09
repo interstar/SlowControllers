@@ -66,10 +66,16 @@ namespace rack {
   };
 
   struct WaveTable {
+  private :
+    float xx,yy,zz;
+    float mix;
+  public:
+
     Waves waves;
     TriOsc ox, oy;
-    float mix;
+
     bool frozen;
+
 
     void setup();
     void update();
@@ -81,11 +87,15 @@ namespace rack {
     void setScan(float scan);
     void setFrozen(float fr);
 
+    float x();
+    float y();
+    float z();
+
     float x_(int i);
     float y_(int i);
     float z_(int i);
 
-    float nextScan();
+    void nextScan();
   };
 
   struct WaveTableWidget : public OpaqueWidget {

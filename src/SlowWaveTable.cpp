@@ -88,12 +88,19 @@ namespace rack {
     }
   }
 
+  float WaveTable::x() { return xx; }
+  float WaveTable::y() { return yy; }
+  float WaveTable::z() { return zz; }
+
   float WaveTable::x_(int i) { return waves.wx[i]; }
   float WaveTable::y_(int i) { return waves.wy[i]; }
-  float WaveTable::z_(int i) { return 0.6*(waves.wx[i]*(1-mix) + waves.wy[i]*mix); }
+  float WaveTable::z_(int i) { return 0.6 * (waves.wx[i]*(1-mix) + waves.wy[i]*mix); }
 
-  float WaveTable::nextScan() {
-    return z_(waves.readHead.next());
+  void WaveTable::nextScan() {
+    int i = waves.readHead.next();
+    xx = waves.wx[i];
+    yy = waves.wy[i];
+    zz = 0.6 * (xx * (1-mix) + yy * mix);
   }
 
   // __WaveTableWidget___________________________________________________________________
@@ -170,7 +177,9 @@ namespace rack {
     };
 
     enum OutputIds {
-      ONE_OUTPUT,
+      X_OUTPUT,
+      Y_OUTPUT,
+      Mix_OUTPUT,
       NUM_OUTPUTS
     };
 
@@ -207,7 +216,11 @@ void SlowWaveTable::step() {
   waveTable.setFrozen(params[Freeze_PARAM].value);
   waveTable.setMix(params[Mix_PARAM].value);
   waveTable.setScan(params[Scan_PARAM].value);
-  outputs[ONE_OUTPUT].value = waveTable.nextScan();
+
+  waveTable.nextScan();
+  outputs[X_OUTPUT].value = waveTable.x();
+  outputs[Y_OUTPUT].value = waveTable.y();
+  outputs[Mix_OUTPUT].value = waveTable.z();
 }
 
 struct SlowWaveTableWidget : ModuleWidget {
@@ -234,8 +247,9 @@ struct SlowWaveTableWidget : ModuleWidget {
     addParam(ParamWidget::create<RoundHugeBlackKnob>(Vec(130, 270), module, SlowWaveTable::Scan_PARAM, 0.01, 10, 1));
 
 
-    addOutput(Port::create<PJ301MPort>(Vec(334, 200), Port::OUTPUT, module, SlowWaveTable::ONE_OUTPUT));
-
+    addOutput(Port::create<PJ301MPort>(Vec(334, 200), Port::OUTPUT, module, SlowWaveTable::X_OUTPUT));
+    addOutput(Port::create<PJ301MPort>(Vec(334, 240), Port::OUTPUT, module, SlowWaveTable::Y_OUTPUT));
+    addOutput(Port::create<PJ301MPort>(Vec(334, 280), Port::OUTPUT, module, SlowWaveTable::Mix_OUTPUT));
   }
 
 };
