@@ -73,7 +73,7 @@ namespace rack {
 
     TriOsc ox, oy;
 
-    bool frozen;
+    bool frozenX, frozenY;
 
 
     void setup();
@@ -84,7 +84,8 @@ namespace rack {
     void setDY(float dy);
     void setMix(float mix);
     void setScan(float scan);
-    void setFrozen(float fr);
+    void setFrozenX(float fr);
+    void setFrozenY(float fr);
 
     float x();
     float y();

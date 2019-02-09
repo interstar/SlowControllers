@@ -76,14 +76,20 @@ namespace rack {
     readHead.setDX(s);
   }
 
-  void WaveTable::setFrozen(float fr) {
-    frozen = (fr < 0.5) ? false : true;
+  void WaveTable::setFrozenX(float fr) {
+    frozenX = (fr < 0.5) ? false : true;
+  }
+
+  void WaveTable::setFrozenY(float fr) {
+    frozenY = (fr < 0.5) ? false : true;
   }
 
   void WaveTable::update() {
-    if (!frozen) {
-      int i = writeHead.next();
+    int i = writeHead.next();
+    if (!frozenX) {
       wx[i] = ox.next();
+    }
+    if (!frozenY) {
       wy[i] = oy.next();
     }
   }
@@ -164,7 +170,8 @@ namespace rack {
       DY_PARAM,
       Mix_PARAM,
       Scan_PARAM,
-      Freeze_PARAM,
+      FreezeX_PARAM,
+      FreezeY_PARAM,
       NUM_PARAMS
     };
 
@@ -215,7 +222,8 @@ void SlowWaveTable::step() {
     oldDY = dy;
   }
 
-  waveTable.setFrozen(params[Freeze_PARAM].value);
+  waveTable.setFrozenX(params[FreezeX_PARAM].value);
+  waveTable.setFrozenY(params[FreezeY_PARAM].value);
 
   waveTable.setMix(params[Mix_PARAM].value + (inputs[Mix_INPUT].value / 10)  );
   waveTable.setScan(params[Scan_PARAM].value + inputs[Scan_PARAM].value);
@@ -242,7 +250,8 @@ struct SlowWaveTableWidget : ModuleWidget {
     wtw->setup(0,0,module->exposeWT());
     addChild(wtw);
 
-    addParam(ParamWidget::create<CKSS>(Vec(234, 200), module, SlowWaveTable::Freeze_PARAM, 0.0f, 1.0f, 1.0f));
+    addParam(ParamWidget::create<CKSS>(Vec(234, 200), module, SlowWaveTable::FreezeX_PARAM, 0.0f, 1.0f, 1.0f));
+    addParam(ParamWidget::create<CKSS>(Vec(254, 200), module, SlowWaveTable::FreezeY_PARAM, 0.0f, 1.0f, 1.0f));
 
     addParam(ParamWidget::create<RoundHugeBlackKnob>(Vec(30, 180), module, SlowWaveTable::DX_PARAM, 0.01, 1.0, 0.3));
     addParam(ParamWidget::create<RoundHugeBlackKnob>(Vec(130, 180), module, SlowWaveTable::DY_PARAM, 0.01, 1.0, 0.3));
