@@ -272,4 +272,4 @@ struct SlowWaveTableWidget : ModuleWidget {
 };
 
 
-Model *modelSlowWaveTable = Model::create<SlowWaveTable, SlowWaveTableWidget>("SlowWaveTable","SlowWaveTable","SlowWaveTable", OSCILLATOR_TAG);
+Model *modelSlowWaveTable = Model::create<SlowWaveTable, SlowWaveTableWidget>("Synaesmedia","SlowController","SlowWaveTable", OSCILLATOR_TAG);

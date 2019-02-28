@@ -98,4 +98,4 @@ struct SlowSlidersWidget : ModuleWidget {
 // author name for categorization per plugin, module slug (should never
 // change), human-readable module name, and any number of tags
 // (found in `include/tags.hpp`) separated by commas.
-Model *modelSlowSliders = Model::create<SlowSliders, SlowSlidersWidget>("SlowSliders", "SlowSliders", "SlowSliders", CONTROLLER_TAG);
+Model *modelSlowSliders = Model::create<SlowSliders, SlowSlidersWidget>("Synaesmedia", "SlowSliders", "SlowSliders", CONTROLLER_TAG);
