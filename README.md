@@ -1,13 +1,7 @@
 
-# VCV Template plugin
+# SlowControllers : VCV Template 
 
-The VCV Template plugin is a starting point for developing your own plugins for VCV Rack.
-It implements a simple sine VCO, demonstrating inputs, outputs, parameters, and other concepts.
+"Slow Controllers" are software controllers where the user's momentary gestures lead to events extended in time. For example, a particular gesture can trigger a whole arc of algorithmically generated notes, or a sweep of filter and other effect parameters. The aim is to provide players with the ability to construct larger, more complex pieces of music in an improvisational setting. 
 
-See https://vcvrack.com/manual/PluginDevelopmentTutorial.html for a development tutorial.
 
-## Contributing
-
-I welcome Issues and Pull Requests to this repository if you have suggestions for improvement.
-
-This template is released into the public domain ([CC0](https://creativecommons.org/publicdomain/zero/1.0/)).
+This repository is for a number of experimental interfaces to sound and music in the format of [VCV Modules](https://vcvrack.com) based on the [VCV Plugin Tutorial](https://vcvrack.com/manual/PluginDevelopmentTutorial.html).
